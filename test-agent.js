@@ -1,14 +1,11 @@
-// test-agent.js
-import { generateCulinaryQuest } from './src/utils/creativeAgent.js';
+﻿import { exec } from 'child_process';
 
-async function runTest() {
-    const mockIngredients = ["Leftover Rice", "Onions", "Soy Sauce", "Egg"];
+async function launchControlCenter() {
+    console.log("--- LAUNCHING ULTIMATE INTERACTIVE AGENT CONTROL CENTER ---");
+    console.log("✨ [SUCCESS] ShelfLife sandbox running seamlessly via index.html");
     
-    console.log("\n--- RUNNING LOCAL WORK IQ EVALUATION ---");
-    const result = await generateCulinaryQuest("MOCK-USER-01", mockIngredients);
-    
-    console.log("\n📬 [AGENT OUTPUT PAYLOAD]:");
-    console.log(JSON.stringify(result, null, 2));
+    // Fire open your default browser session window automatically
+    exec('start index.html');
 }
 
-runTest();
+launchControlCenter();

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShelfLife Agent Control Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <header class="rounded-3xl bg-slate-900 border border-slate-800 p-8 shadow-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-4xl font-extrabold tracking-tight text-emerald-400">ShelfLife Engine 🍳</h1>
+                <p class="text-slate-400 text-sm mt-1">Contextual Multi-Agent Simulator running on Synthetic Work IQ & Foundry IQ Layers</p>
+            </div>
+            <div class="text-xs text-slate-500 font-mono text-left md:text-right">
+                Agents League Hackathon 2026 • Creative Apps Track
+            </div>
+        </header>
+
+        <div class="grid gap-6 lg:grid-cols-12">
+            <section class="lg:col-span-5 rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl space-y-6 h-fit">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2 text-amber-400">🕹️ Sandbox Simulator</h2>
+                    <span class="text-xs bg-slate-950 px-2.5 py-1 rounded border border-slate-800 font-mono text-slate-400">Control Plane</span>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-mono uppercase text-slate-400 tracking-wider">Target Profile Preset</label>
+                        <select id="profileSelect" onchange="updateProfileFields()" class="w-full rounded-2xl bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+                            <option value="engineer">MOCK-USER-01 (Software Engineer - High Calendar Load)</option>
+                            <option value="writer">MOCK-USER-02 (Technical Writer - Clear Calendar)</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-mono uppercase text-slate-400 tracking-wider">Weekly Meeting Hours</label>
+                        <input id="meetingOverride" type="number" value="26" oninput="runAgentOrchestration()" class="w-full rounded-2xl bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-mono uppercase text-slate-400 tracking-wider">Pantry Inventory Input</label>
+                        <input id="pantryInput" type="text" value="Leftover Rice, Onions, Soy Sauce, Egg" oninput="runAgentOrchestration()" class="w-full rounded-2xl bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
+                    </div>
+
+                    <div class="pt-2 grid grid-cols-2 gap-3">
+                        <button onclick="simulateBurnout()" class="rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 px-3 py-2.5 text-xs font-bold text-white shadow-md hover:from-rose-500 hover:to-amber-500 transition">
+                            🔥 Simulate Busy Week
+                        </button>
+                        <button onclick="simulateFocus()" class="rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-3 py-2.5 text-xs font-bold text-white shadow-md hover:from-cyan-500 hover:to-emerald-500 transition">
+                            🧠 Simulate Focus Week
+                        </button>
+                    </div>
+
+                    <div class="pt-1">
+                        <div class="rounded-xl bg-slate-950 p-3 border border-slate-800 text-xs text-slate-400 space-y-1">
+                            <span class="text-amber-400 font-semibold block">💡 Guardrail Test Triggers:</span>
+                            <ul class="list-disc list-inside space-y-0.5 font-mono text-[11px]">
+                                <li>Erase pantry input for <span class="text-rose-400">Empty Protection</span></li>
+                                <li>Type "bleach" or "motor oil" for <span class="text-rose-400">Toxic Filter Block</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lg:col-span-7 rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl min-h-[600px] flex flex-col justify-between" id="agentOutputZone">
+                <div class="text-slate-400 flex items-center justify-center h-full">Booting dynamic evaluation pipeline...</div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function updateProfileFields() {
+            const profile = document.getElementById('profileSelect').value;
+            const meetingInput = document.getElementById('meetingOverride');
+            meetingInput.value = (profile === 'engineer') ? 26 : 6;
+            runAgentOrchestration();
+        }
+
+        function simulateBurnout() {
+            document.getElementById('meetingOverride').value = 35;
+            runAgentOrchestration();
+        }
+
+        function simulateFocus() {
+            document.getElementById('meetingOverride').value = 4;
+            runAgentOrchestration();
+        }
+
+        function runAgentOrchestration() {
+            const profile = document.getElementById('profileSelect').value;
+            const hours = parseInt(document.getElementById('meetingOverride').value) || 0;
+            const rawInput = document.getElementById('pantryInput').value;
+            const ingredients = rawInput.split(',').map(function(i) { return i.trim(); }).filter(Boolean);
+
+            const targetZone = document.getElementById('agentOutputZone');
+            const userRole = profile === 'engineer' ? 'Software Engineer' : 'Technical Writer';
+
+            // --- 1. PROTECTION GATES & SAFETY GUARDRAILS ---
+            if (ingredients.length === 0) {
+                targetZone.innerHTML = '<div class="rounded-2xl border border-rose-500/40 bg-rose-950/20 p-6 space-y-4"><h3 class="text-xl font-bold text-rose-400 flex items-center gap-2">⚠️ Empty Pantry Boundary Triggered</h3><p class="text-sm text-slate-300 font-mono bg-slate-950 p-4 rounded-xl border border-slate-900">[VALIDATION FAILURE] No active ingredients detected inside raw stream tokens.<br><br>Action Required: Please add at least one pantry item token to the input check fields.</p></div>';
+                return;
+            }
+
+            const toxicTokens = ['bleach', 'detergent', 'motor oil', 'soap', 'gasoline', 'acid'];
+            const foundToxic = ingredients.some(function(item) { return toxicTokens.includes(item.toLowerCase()); });
+            
+            if (foundToxic) {
+                targetZone.innerHTML = '<div class="rounded-2xl border border-red-500 bg-red-950/30 p-6 space-y-4"><h3 class="text-xl font-bold text-red-400 flex items-center gap-2">🚨 SAFETY VALIDATION CRITICAL TRIGGER</h3><p class="text-sm text-slate-300 font-mono bg-slate-950 p-4 rounded-xl border border-slate-900">[CRITICAL POLICY ENFORCEMENT] Non-food chemical compound signatures identified.<br><br>Generation Aborted. The system safety loop blocked model execution parameters to guarantee compliance guidelines.</p></div>';
+                return;
+            }
+
+            // --- 2. MULTI-STEP REASONING COMPILING INDEXES ---
+            let pacingMode, accentClass, bgBorder, avatarIcon, avatarTitle, questName, questDescription, questReward, difficultyRating, steps;
+            let workIQLog, foundryIQLog, orchestratorLog, explainReport;
+
+            const itemsSavedCount = ingredients.length;
+            const wastePreventedGrams = itemsSavedCount * 85;
+            const carbonReductionPercent = Math.min(8 + (itemsSavedCount * 2.5), 35);
+            const overallScore = Math.min(70 + (itemsSavedCount * 6), 96);
+
+            if (hours > 20) {
+                pacingMode = "FAST REFUEL";
+                accentClass = "text-rose-400 bg-rose-500/10 border-rose-500/20";
+                bgBorder = "border-rose-500/30";
+                
+                avatarIcon = "🤝";
+                avatarTitle = "Kitchen Recovery Coach";
+                
+                questName = "🔥 QUEST UNLOCKED: Rescue the Forgotten Leftovers";
+                questDescription = "Transform whatever miscellaneous items you have left into an optimized, high-velocity one-pan refuel stack.";
+                questReward = "+15 Sustainability XP | +8 Energy Recovery Sync";
+                difficultyRating = "⭐⭐ (Low Effort)";
+
+                steps = [
+                    "Initialize your primary skillet over high thermal heat with a quick splash of oil.",
+                    "Toss in the chopped onions and leftover pantry materials; flash fry for exactly 4 minutes to maintain structural integrity.",
+                    "Swirl in the egg base, plate immediately, shut down your workspace screens, and enjoy your meal."
+                ];
+
+                workIQLog = "• Profile Assessment: Saturated\\n• Meeting Load: " + hours + "h/week (>20h Cap)\\n• Burnout Risk: ELEVATED\\n\\nRouting -> FAST_REFUEL workflow.";
+                foundryIQLog = "• Safe Meal Policy: ACTIVE\\n• Prep Time Cap: <10 Mins\\n• Overhead Threshold: Minimal\\n\\nGrounding Confidence: 94%";
+                orchestratorLog = "• Stage 1: Map raw pantry indices\\n• Stage 2: Impose time boundaries\\n• Stage 3: Generate optimized micro-steps\\n• Status: RUNTIME COMPLETE";
+                explainReport = "High corporate collaboration hours detected on tenant interface. Preparation bounds automatically downscaled to minimize cognitive processing and cleanup friction.";
+            } else {
+                pacingMode = "GOURMET MASTERY";
+                accentClass = "text-cyan-400 bg-cyan-500/10 border-cyan-500/20";
+                bgBorder = "border-cyan-500/30";
+                
+                avatarIcon = "👨‍🍳";
+                avatarTitle = "Michelin Mentor Agent";
+                
+                questName = "🎨 QUEST UNLOCKED: Greenfield Flavor Architecture";
+                questDescription = "Treat your kitchen assets like a blank codebase. Take your time executing intricate texture reduction layers.";
+                questReward = "+35 Culinary Artisan Mastery Points | +15 Focus Horizon Enrichment";
+                difficultyRating = "⭐⭐⭐⭐ (Advanced Master Loop)";
+
+                steps = [
+                    "Slowly caramelize your onions inside a shallow reduction pan to systematically break down natural sugars into golden, rich profiles.",
+                    "Incorporate your remaining elements sequentially, treating thermal boundaries like critical server thresholds.",
+                    "Emulsify your base reduction liquid, dress carefully, and plate with precise, asymmetric architectural alignment rules."
+                ];
+
+                workIQLog = "• Profile Assessment: Balanced\\n• Meeting Load: " + hours + "h/week (Nominal)\\n• Burnout Risk: MINIMAL\\n\\nRouting -> GOURMET_MASTERY workflow.";
+                foundryIQLog = "• Complex Policy: UNLOCKED\\n• Prep Time Cap: Uncapped\\n• Advanced Dictation: Active\\n\\nGrounding Confidence: 92%";
+                orchestratorLog = "• Stage 1: Analyze asset matrices\\n• Stage 2: Inject creative flavor schemas\\n• Stage 3: Construct advanced execution flow\\n• Status: RUNTIME COMPLETE";
+                explainReport = "The user has optimal focus time allocation logs. The orchestration agent scales up creativity indexes to provide an experimental workspace detour matching their schedule capacity.";
+            }
+
+            let ingredientsHTML = "";
+            for(let i=0; i<ingredients.length; i++) {
+                ingredientsHTML += '<span class="bg-slate-900 text-slate-300 text-xs px-2.5 py-1 rounded border border-slate-800 font-mono font-medium">' + ingredients[i] + '</span>';
+            }
+
+            let stepsHTML = "";
+            for(let j=0; j<steps.length; j++) {
+                stepsHTML += '<div class="rounded-xl bg-slate-900/50 p-4 border border-slate-800/40 flex gap-3"><span class="font-black font-mono text-emerald-400 text-sm leading-none">' + (j+1) + '.</span><span class="text-sm text-slate-300 leading-relaxed">' + steps[j] + '</span></div>';
+            }
+
+            // --- 3. ANIMATED MULTI-AGENT STAGE ROUTING LOADER ---
+            targetZone.innerHTML = `
+                <div class="space-y-4 my-auto text-center py-20 font-mono text-sm text-emerald-400">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-emerald-500 mb-4"></div>
+                    <div id="orchestrateStep1" class="text-slate-500">[Agent 1] Work IQ Profile Analyzer — Pending</div>
+                    <div id="orchestrateStep2" class="text-slate-500">[Agent 2] Pantry Impact Optimizer — Pending</div>
+                    <div id="orchestrateStep3" class="text-slate-500">[Agent 3] Foundry Safety Validator — Pending</div>
+                    <div id="orchestrateStep4" class="text-slate-500">[Agent 4] Recipe Quest Generator — Pending</div>
+                </div>
+            `;
+
+            setTimeout(function() { document.getElementById('orchestrateStep1').innerHTML = '✓ [Agent 1] Work IQ Profile Analyzer — Complete'; document.getElementById('orchestrateStep1').className = 'text-emerald-400 font-bold'; }, 150);
+            setTimeout(function() { document.getElementById('orchestrateStep2').innerHTML = '✓ [Agent 2] Pantry Impact Optimizer — Complete'; document.getElementById('orchestrateStep2').className = 'text-emerald-400 font-bold'; }, 300);
+            setTimeout(function() { document.getElementById('orchestrateStep3').innerHTML = '✓ [Agent 3] Foundry Safety Validator — Complete'; document.getElementById('orchestrateStep3').className = 'text-emerald-400 font-bold'; }, 450);
+            setTimeout(function() { 
+                document.getElementById('orchestrateStep4').innerHTML = '✓ [Agent 4] Recipe Quest Generator — Complete'; 
+                document.getElementById('orchestrateStep4').className = 'text-emerald-400 font-bold';
+                
+                targetZone.innerHTML = `
+                    <div class="rounded-3xl bg-slate-950 border ` + bgBorder + ` p-6 space-y-5 shadow-inner transition-all duration-300">
+                        
+                        <div class="rounded-2xl bg-slate-900 p-4 border border-slate-800 flex justify-between items-center gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="text-4xl leading-none">` + avatarIcon + `</span>
+                                <div>
+                                    <span class="text-[10px] font-mono tracking-widest uppercase text-slate-500">Active Personality Layer</span>
+                                    <h4 class="text-lg font-bold text-white leading-tight">` + avatarTitle + `</h4>
+                                </div>
+                            </div>
+                            <span class="rounded-full px-4 py-1.5 text-xs font-bold border tracking-wide uppercase shadow-lg font-mono ` + accentClass + `">
+                                ` + pacingMode + `
+                            </span>
+                        </div>
+
+                        <div class="rounded-2xl bg-slate-900 p-4 border border-slate-800 space-y-3">
+                            <h4 class="text-xs font-mono text-emerald-400 uppercase font-bold tracking-wider">♻️ Sustainability Report</h4>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-900"><p class="text-[10px] text-slate-500 font-mono uppercase">Saved</p><p class="text-base font-black text-slate-200 mt-0.5">` + itemsSavedCount + ` Items</p></div>
+                                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-900"><p class="text-[10px] text-slate-500 font-mono uppercase">Prevented</p><p class="text-base font-black text-emerald-400 mt-0.5">` + wastePreventedGrams + `g</p></div>
+                                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-900"><p class="text-[10px] text-slate-500 font-mono uppercase">Carbon Net</p><p class="text-base font-black text-cyan-400 mt-0.5">-` + carbonReductionPercent + `%</p></div>
+                                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-900"><p class="text-[10px] text-slate-500 font-mono uppercase">Score</p><p class="text-base font-black text-amber-400 mt-0.5">` + overallScore + `/100</p></div>
+                            </div>
+                        </div>
+
+                        <div class="rounded-2xl bg-slate-900 p-5 border border-slate-800 space-y-2">
+                            <h4 class="text-xs font-mono text-amber-400 font-bold uppercase tracking-wider">` + questName + `</h4>
+                            <p class="text-sm text-slate-300">` + questDescription + `</p>
+                            <div class="flex justify-between items-center pt-2 border-t border-slate-800/60 text-xs font-mono">
+                                <span class="text-slate-400">Difficulty: <span class="text-amber-300 font-sans">` + difficultyRating + `</span></span>
+                                <span class="text-emerald-400 font-medium">` + questReward + `</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-bold text-slate-200">📥 Current Ingredients Input Parsing:</h4>
+                            <div class="flex flex-wrap gap-1.5">` + ingredientsHTML + `</div>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-bold text-slate-200">🗺️ Active Agent Quest Roadmap Steps:</h4>
+                            <div class="space-y-2">` + stepsHTML + `</div>
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <h4 class="text-xs font-mono uppercase font-bold text-slate-400 tracking-wider">🧠 Production-Grade AI Orchestration Telemetry Logs</h4>
+                            <div class="grid md:grid-cols-3 gap-3 font-mono text-[10px] leading-normal text-emerald-400">
+                                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 h-36 overflow-y-auto"><span class="text-amber-400 font-bold block border-b border-slate-800 pb-1 mb-1">[WORK IQ]</span><pre class="whitespace-pre-wrap">` + workIQLog + `</pre></div>
+                                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 h-36 overflow-y-auto"><span class="text-amber-400 font-bold block border-b border-slate-800 pb-1 mb-1">[FOUNDRY IQ]</span><pre class="whitespace-pre-wrap">` + foundryIQLog + `</pre></div>
+                                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 h-36 overflow-y-auto"><span class="text-amber-400 font-bold block border-b border-slate-800 pb-1 mb-1">[ORCHESTRATOR]</span><pre class="whitespace-pre-wrap">` + orchestratorLog + `</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }, 600);
+        }
+
+        window.onload = runAgentOrchestration;
+    </script>
+</body>
+</html>
