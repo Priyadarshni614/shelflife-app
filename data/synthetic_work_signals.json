@@ -1,0 +1,16 @@
+[
+  {
+    "user_id": "MOCK-USER-01",
+    "role": "Software Engineer",
+    "weekly_meeting_hours": 26,
+    "focus_hours_per_week": 4,
+    "current_burnout_risk": "High"
+  },
+  {
+    "user_id": "MOCK-USER-02",
+    "role": "Technical Writer",
+    "weekly_meeting_hours": 6,
+    "focus_hours_per_week": 24,
+    "current_burnout_risk": "Low"
+  }
+]

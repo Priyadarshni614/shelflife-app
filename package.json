@@ -1,0 +1,13 @@
+{
+  "name": "shelflife-app",
+  "version": "1.0.0",
+  "description": "Project created in the shelflife-app workspace.",
+  "main": "test-agent.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
