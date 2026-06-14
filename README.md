@@ -1,39 +1,56 @@
-# ShelfLife 🍳 — The Smart Creative Pantry Remixer
+# ShelfLife Engine 🍳 — Dynamic Context-Aware Agent Control Plane
 
-An interactive, AI-driven "Pantry-to-Plate" application built for the **Microsoft Agents League Hackathon (2026)**. ShelfLife leverages AI-assisted development workflows to turn miscellaneous, leftover kitchen ingredients into engaging, gamified culinary quests, dynamically tailored by a user's corporate schedule metrics.
-
----
-
-## 🧠 Microsoft IQ Integration (Work IQ Layer)
-To fulfill the core requirement of grounding our application workflow in real organizational signals safely, ShelfLife integrates a **synthetic Work IQ context layer** located at `data/synthetic_work_signals.json`.
-
-### How It Works:
-* **Context Harvesting:** The application's core logic parses a fabricated employee dashboard tracking automated workload parameters (such as `weekly_meeting_hours` and `current_burnout_risk`).
-* **Multi-Step Agent Adaptation:** * If the parsed Work IQ metrics reveal a highly saturated calendar (>20 meeting hours), the agent's orchestration routine automatically switches to a supportive, comforting system persona and restricts recipe generations to fast, low-effort 10-minute recipes.
-  * If the corporate calendar is clear, the agent drops its defensive pacing and outputs intricate, multi-step gourmet challenges requiring advanced culinary steps.
+An interactive, AI-driven application sandbox built for the **Agents League Hackathon 2026** (Creative Apps Track). **ShelfLife** transforms miscellaneous, leftover pantry ingredients into engaging, gamified culinary quests, dynamically adapted by an employee's organizational stress and workload signals.
 
 ---
 
-## 🛠️ Built with GitHub Copilot
-This codebase was rapidly scaffolded and optimized using **GitHub Copilot** inside VS Code. Copilot was utilized across multiple modes to accelerate development:
-1. **Agent Mode:** Used to structure our core multi-step logical branching layers inside `src/utils/creativeAgent.js`.
-2. **Edit Mode:** Leveraged to implement input string sanitization and write execution safeguards to protect API keys.
-3. **Plan Mode:** Utilized to map our data model schemas before drafting the local JSON data layers.
+## 🧠 Dual-IQ Layer Architecture & Multi-Agent Logic
+
+To fulfill the core hackathon requirements of grounding agent workflows in real organizational context safely, ShelfLife relies on a robust dual-layer evaluation structure:
+
+### 1. Work IQ Layer (Dynamic Context Tracking)
+The engine evaluates live organizational signals (simulating user parameters such as `weekly_meeting_hours`, calendar density, and burnout probability) to map the current cognitive fatigue index of the user.
+
+### 2. Foundry IQ Layer (Policy Compliance & Rules Grounding)
+Acts as a strict regulatory gatekeeper. It locks instructions down against active cooking guidelines—enforcing a `<10-minute prep time` constraint on single-vessel setups for high-stress users, while unlocking uncapped, advanced composition rules for users with open focus blocks.
 
 ---
 
-## 🔬 Local Architecture & Test Run
-The project uses a modular Node.js setup with ES modules to execute core agent evaluations.
+## 🕹️ Interactive Control Plane Sandbox Features
 
-### File Structure:
+The workspace interface (`index.html`) acts as a real-time reactive dashboard designed to give hackathon judges an immediate, highly visual proof of concept:
+
+*   **Five-Second Adaptiveness Demo:** Evaluators can click the **🔥 Simulate Busy Week** or **🧠 Simulate Focus Week** buttons to watch the entire engine cascade live—shifting color palettes (Rose vs. Cyan), updating scores, swapping personas, and completely rewriting recipes in real time.
+*   **Multi-Agent Orchestration Telemetry:** Uses simulated async timing chains to visually track the execution phases of four distinct sub-agents (*Work IQ Profile Analyzer*, *Pantry Impact Optimizer*, *Foundry Safety Validator*, and *Recipe Quest Generator*) directly in front of the viewer.
+*   **Live Production Telemetry Logs:** Features embedded output terminals showing real-time text-trace telemetry logs (`[WORK IQ]`, `[FOUNDRY IQ]`, `[ORCHESTRATOR]`) to maintain complete decision transparency.
+*   **Gamified Quest Deck Cards:** Replaces plain text layouts with full immersion quest cards complete with custom difficulty stars, unique missions, and tailored feedback parameters (*+15 Sustainability XP*, *Focus Horizon Enrichment*).
+*   **Sustainability Intelligence Panel:** Evaluates the array length of current ingredients live to dynamically calculate real-world metrics like *Ingredients Saved*, *Estimated Waste Prevented (g)*, and *Carbon Net Impact Reduction %*.
+
+---
+
+## 🔒 Enterprise-Ready Safety Patterns & Guardrails
+
+To ensure total runtime stability and eliminate common multi-agent system failures, ShelfLife includes two critical safety validation gates:
+
+1.  **Empty Pantry Boundary:** Intercepts blank stream inputs before execution, instantly rendering a soft structural validation warning container on-screen instead of throwing a system crash.
+2.  **Toxic Material Vector Filtering Gate:** Screens string inputs against a strict array of non-food keywords (e.g., `bleach`, `motor oil`, `detergent`). If detected, the generation pipeline is instantly aborted, model context rendering is blocked, and a high-severity **🚨 SAFETY VALIDATION CRITICAL TRIGGER** panel is logged to guarantee compliance bounds.
+
+---
+
+## 🛠️ Built with AI-Assisted Workflows (GitHub Copilot)
+This codebase was rapidly scaffolded, optimized, and debugged using **GitHub Copilot** across multiple workflow modes to maintain high execution velocity:
+*   **Plan Mode:** Utilized to map data schemas and build semantic routing paths for our workload parameters before drafting logic.
+*   **Agent Mode:** Used to structure the complex JavaScript string concatenations and template metrics inside the dashboard generator.
+*   **Edit Mode:** Leveraged to implement our text input token sanitizers and embed our safety filter checks.
+
+---
+
+## 🔬 Local Project Architecture
+
+The project directory is structured as a lightweight, lightning-fast web sandbox environment:
+
 ```text
 shelflife-app/
-├── data/
-│   └── synthetic_work_signals.json   <-- Synthetic Work IQ Dataset
-├── src/
-│   └── utils/
-│       └── creativeAgent.js          <-- Core Context-Aware Agent Engine
-├── .gitignore                        <-- Environment Boundaries & Secret Protection
-├── package.json                      <-- Module Configurations
-├── README.md                         <-- Submission Documentation
-└── test-agent.js                     <-- Local Telemetry Tester
+├── index.html         <--- Ultimate Interactive Agent Control Center Panel Dashboard
+├── test-agent.js      <--- Local Desktop Launcher Script (Triggers Browser Automation)
+└── package.json       <--- Project Configuration & ES Modules Activation Layer
